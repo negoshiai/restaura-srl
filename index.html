@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaura Srl: Dove la storia incontra il futuro.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --charcoal-slate: #343A40;
+            --terracotta-earth: #B25A41;
+            --polished-brass: #D4AF37;
+            --travertine-cream: #F5F5F1;
+            --white: #ffffff;
+            --font-headline: 'Playfair Display', serif;
+            --font-body: 'Lato', sans-serif;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            background-color: var(--travertine-cream);
+            color: var(--charcoal-slate);
+            font-family: var(--font-body);
+            line-height: 1.7;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        .cursor-dot, .cursor-outline {
+            pointer-events: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.2s ease;
+        }
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--polished-brass);
+        }
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(212, 175, 55, 0.2);
+            border: 1px solid var(--polished-brass);
+        }
+        body:hover .cursor-dot, body:hover .cursor-outline {
+            opacity: 1;
+        }
+        a:hover ~ .cursor-outline, button:hover ~ .cursor-outline, .interactive:hover ~ .cursor-outline {
+            transform: translate(-50%, -50%) scale(1.5);
+            background-color: rgba(178, 90, 65, 0.3);
+        }
+
+        h1, h2, h3, h4 {
+            font-family: var(--font-headline);
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        h1 { font-size: 4rem; }
+        h2 { font-size: 2.75rem; }
+        h3 { font-size: 1.75rem; }
+
+        p {
+            margin-bottom: 1rem;
+            max-width: 70ch;
+        }
+
+        a {
+            color: var(--terracotta-earth);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        section {
+            padding: 6rem 0;
+            overflow: hidden;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            font-family: var(--font-body);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 50px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            border: 2px solid transparent;
+        }
+
+        .btn-primary {
+            background-color: var(--terracotta-earth);
+            color: var(--travertine-cream);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--polished-brass);
+            color: var(--charcoal-slate);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .btn-secondary {
+            border: 2px solid var(--terracotta-earth);
+            color: var(--terracotta-earth);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--terracotta-earth);
+            color: var(--travertine-cream);
+        }
+
+        /* Header */
+        .main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 0;
+            z-index: 1000;
+            transition: background-color 0.4s ease, padding 0.4s ease;
+        }
+
+        .main-header.scrolled {
+            background-color: rgba(245, 245, 241, 0.95);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 95%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-family: var(--font-headline);
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--charcoal-slate);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--terracotta-earth);
+        }
+
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+        .main-nav a {
+            color: var(--charcoal-slate);
+            text-decoration: none;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--polished-brass);
+            transition: width 0.4s ease;
+        }
+        .main-nav a:hover::after {
+            width: 100%;
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        .hamburger div {
+            width: 30px;
+            height: 3px;
+            background-color: var(--charcoal-slate);
+            margin: 6px 0;
+            transition: 0.4s;
+        }
+
+        /* Hero Section */
+        #hero {
+            height: 100vh;
+            min-height: 700px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+            position: relative;
+            padding: 0;
+        }
+
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        #hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(52, 58, 64, 0.6);
+            z-index: -1;
+        }
+
+        .hero-content {
+            z-index: 1;
+        }
+
+        .hero-content h1 {
+            color: var(--white);
+            text-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: var(--travertine-cream);
+            max-width: 600px;
+            margin: 1.5rem auto 2.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Specialization Section */
+        #specialization {
+            background-color: var(--white);
+        }
+        .specialization-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        .specialization-item {
+            position: relative;
+            padding: 3rem;
+            border: 1px solid #e0e0e0;
+            background-color: var(--travertine-cream);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .specialization-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+        }
+        .specialization-icon {
+            margin-bottom: 1.5rem;
+            color: var(--terracotta-earth);
+            width: 50px;
+            height: 50px;
+        }
+        .specialization-item h3 {
+            margin-bottom: 1rem;
+            color: var(--charcoal-slate);
+        }
+
+        /* Services Section */
+        .text-center {
+            text-align: center;
+        }
+        .section-intro {
+            max-width: 800px;
+            margin: 0 auto 4rem;
+        }
+        .section-intro h2 {
+            margin-bottom: 1rem;
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .service-card {
+            background: var(--white);
+            padding: 2.5rem;
+            text-align: center;
+            border-radius: 5px;
+            border-bottom: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.07);
+            border-bottom-color: var(--polished-brass);
+        }
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1.5rem;
+            color: var(--terracotta-earth);
+        }
+
+        /* Projects Section */
+        #progetti {
+            background-color: var(--white);
+        }
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+        .filter-btn {
+            background: transparent;
+            border: 1px solid #ccc;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background-color: var(--charcoal-slate);
+            color: var(--white);
+            border-color: var(--charcoal-slate);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        .project-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 5px;
+            aspect-ratio: 4 / 3;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .project-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .project-item:hover img {
+            transform: scale(1.1);
+        }
+        .project-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(52, 58, 64, 0.8), rgba(52, 58, 64, 0));
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1.5rem;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .project-item:hover .project-overlay {
+            opacity: 1;
+        }
+        .project-overlay::before {
+            content: '';
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 2px;
+            height: 0;
+            background: var(--polished-brass);
+            transition: height 0.4s ease 0.2s;
+        }
+        .project-item:hover .project-overlay::before {
+            height: calc(100% - 3rem);
+        }
+        .project-overlay::after {
+            content: '';
+            position: absolute;
+            bottom: 1.5rem;
+            left: 1.5rem;
+            width: 0;
+            height: 2px;
+            background: var(--polished-brass);
+            transition: width 0.4s ease 0.2s;
+        }
+        .project-item:hover .project-overlay::after {
+            width: calc(100% - 3rem);
+        }
+        .project-overlay h4 {
+            font-family: var(--font-headline);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+        .project-overlay p {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: transform 0.5s ease 0.1s, opacity 0.5s ease 0.1s;
+        }
+        .project-item:hover .project-overlay h4, .project-item:hover .project-overlay p {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Process Section */
+        .process-timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .process-timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: var(--polished-brass);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+            opacity: 0.3;
+        }
+        .process-step {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+        }
+        .process-step::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -14px;
+            background-color: var(--travertine-cream);
+            border: 4px solid var(--terracotta-earth);
+            top: 25px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .process-step.left {
+            left: 0;
+            text-align: right;
+        }
+        .process-step.right {
+            left: 50%;
+        }
+        .process-step.right::after {
+            left: -12px;
+        }
+        .process-content {
+            padding: 20px 30px;
+            background-color: var(--white);
+            position: relative;
+            border-radius: 6px;
+        }
+        .process-content h3 {
+            color: var(--terracotta-earth);
+        }
+
+        /* CTA Section */
+        #final-cta {
+            background-color: var(--charcoal-slate);
+            color: var(--white);
+            text-align: center;
+        }
+        #final-cta h2 {
+            color: var(--white);
+            margin-bottom: 2rem;
+        }
+
+        /* Contact Section */
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 4rem;
+            align-items: flex-start;
+        }
+        .contact-info h3 {
+            margin-bottom: 2rem;
+        }
+        .contact-info p {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .contact-info svg {
+            width: 24px;
+            height: 24px;
+            color: var(--terracotta-earth);
+            flex-shrink: 0;
+        }
+
+        .contact-form .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: var(--white);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .contact-form input:focus, .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--polished-brass);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+        .contact-form textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* Footer */
+        .main-footer {
+            background-color: var(--charcoal-slate);
+            color: var(--travertine-cream);
+            padding: 4rem 0;
+            text-align: center;
+        }
+        .footer-logo {
+            font-family: var(--font-headline);
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--travertine-cream);
+            text-decoration: none;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+        .footer-logo span { color: var(--terracotta-earth); }
+        .footer-links {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .footer-links a {
+            color: var(--travertine-cream);
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+        .footer-links a:hover {
+            opacity: 1;
+        }
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .social-icons a {
+            color: var(--travertine-cream);
+            opacity: 0.8;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .social-icons a:hover {
+            opacity: 1;
+            transform: translateY(-3px);
+            color: var(--polished-brass);
+        }
+        .social-icons svg {
+            width: 24px;
+            height: 24px;
+        }
+        .copyright {
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
+
+        /* Animation on Scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s cubic-bezier(0.5, 0, 0, 1), transform 1s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            h1 { font-size: 3rem; }
+            h2 { font-size: 2.25rem; }
+            .specialization-grid { grid-template-columns: 1fr; }
+            .projects-grid { grid-template-columns: 1fr 1fr; }
+            .contact-wrapper { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            html { font-size: 15px; }
+            h1 { font-size: 2.5rem; }
+            .main-nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 100%;
+                height: 100vh;
+                background-color: var(--charcoal-slate);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: right 0.5s ease-in-out;
+            }
+            .main-nav.active {
+                right: 0;
+            }
+            .main-nav ul {
+                flex-direction: column;
+                text-align: center;
+                gap: 2rem;
+            }
+            .main-nav a {
+                color: var(--white);
+                font-size: 1.5rem;
+            }
+            .hamburger {
+                display: block;
+            }
+            .hamburger.toggle .line1 { transform: rotate(-45deg) translate(-7px, 7px); }
+            .hamburger.toggle .line2 { opacity: 0; }
+            .hamburger.toggle .line3 { transform: rotate(45deg) translate(-7px, -7px); }
+            .projects-grid { grid-template-columns: 1fr; }
+            .process-timeline::after { left: 31px; }
+            .process-step { width: 100%; padding-left: 70px; padding-right: 25px; }
+            .process-step.left, .process-step.right { left: 0; text-align: left;}
+            .process-step::after { left: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <header class="main-header">
+        <div class="header-container">
+            <a href="#hero" class="logo interactive">Restaura<span>.</span></a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#specialization" class="interactive">Chi Siamo</a></li>
+                    <li><a href="#servizi" class="interactive">Servizi</a></li>
+                    <li><a href="#progetti" class="interactive">Progetti</a></li>
+                    <li><a href="#processo" class="interactive">Processo</a></li>
+                    <li><a href="#contatti" class="interactive">Contatti</a></li>
+                </ul>
+            </nav>
+            <div class="hamburger interactive">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <section id="hero">
+            <video class="video-background" autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80">
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-architect-working-on-a-city-model-4152-large.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="hero-content reveal">
+                <h1>Dove la storia incontra il futuro.</h1>
+                <p>Esperti in restauro conservativo, ristrutturazioni di pregio e nuove costruzioni dal 1985.</p>
+                <a href="#progetti" class="btn btn-primary interactive">Scopri i Nostri Progetti</a>
+            </div>
+        </section>
+
+        <section id="specialization">
+            <div class="container">
+                <div class="specialization-grid">
+                    <div class="specialization-item reveal">
+                        <svg class="specialization-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <h3>L'Arte del Restauro</h3>
+                        <p>Salvaguardiamo l'anima degli edifici storici con un approccio filologico e tecniche conservative d'avanguardia. Ogni pietra, ogni affresco, ogni dettaglio viene trattato con il massimo rispetto per la sua eredità culturale.</p>
+                    </div>
+                    <div class="specialization-item reveal" style="transition-delay: 200ms;">
+                        <svg class="specialization-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" /></svg>
+                        <h3>La Scienza della Costruzione</h3>
+                        <p>Applichiamo le più moderne tecnologie e metodologie costruttive per garantire efficienza, sicurezza e sostenibilità. Dalle nuove edificazioni alle ristrutturazioni complesse, il nostro focus è sulla qualità che dura nel tempo.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="servizi">
+            <div class="container text-center">
+                <div class="section-intro reveal">
+                    <h2>I Nostri Servizi</h2>
+                    <p>Dalla cura minuziosa del patrimonio storico alla realizzazione di spazi contemporanei, offriamo un ventaglio completo di servizi edili ad alta specializzazione.</p>
+                </div>
+                <div class="services-grid">
+                    <div class="service-card reveal interactive">
+                        <svg class="service-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg>
+                        <h3>Restauro Conservativo</h3>
+                        <p>Interventi specialistici su edifici vincolati, monumenti e beni culturali.</p>
+                    </div>
+                    <div class="service-card reveal interactive" style="transition-delay: 100ms;">
+                        <svg class="service-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h7.5" /></svg>
+                        <h3>Ristrutturazioni</h3>
+                        <p>Riqualificazione e ammodernamento di immobili residenziali e commerciali.</p>
+                    </div>
+                    <div class="service-card reveal interactive" style="transition-delay: 200ms;">
+                        <svg class="service-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6A1.125 1.125 0 012.25 10.875V7.125zM12 6h8.25c.621 0 1.125.504 1.125 1.125v8.25A1.125 1.125 0 0120.25 16.5H12v-1.875c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125-.504 1.125-1.125V8.25c0-.621-.504-1.125-1.125-1.125h-5.25A1.125 1.125 0 0112 6zM3.375 16.5h6c.621 0 1.125-.504 1.125-1.125v-6" /></svg>
+                        <h3>Nuove Costruzioni</h3>
+                        <p>Realizzazione di progetti ex-novo con un'attenzione sartoriale al dettaglio.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="progetti">
+            <div class="container">
+                <div class="section-intro text-center reveal">
+                    <h2>Progetti di Eccellenza</h2>
+                    <p>Il nostro portfolio è la testimonianza tangibile della nostra passione e competenza. Ogni progetto racconta una storia di trasformazione e di valore ritrovato.</p>
+                </div>
+                <div class="filter-buttons reveal">
+                    <button class="filter-btn active interactive" data-filter="all">Tutti</button>
+                    <button class="filter-btn interactive" data-filter="restauro">Restauro</button>
+                    <button class="filter-btn interactive" data-filter="ristrutturazione">Ristrutturazione</button>
+                    <button class="filter-btn interactive" data-filter="nuovo">Nuovo</button>
+                </div>
+                <div class="projects-grid">
+                    <div class="project-item reveal interactive" data-category="restauro">
+                        <img src="https://images.unsplash.com/photo-1598135753163-6167c1a1ad25?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80" alt="Palazzo Storico">
+                        <div class="project-overlay">
+                            <h4>Palazzo Ducale</h4>
+                            <p>Restauro Conservativo</p>
+                        </div>
+                    </div>
+                    <div class="project-item reveal interactive" data-category="ristrutturazione">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80" alt="Villa Moderna">
+                        <div class="project-overlay">
+                            <h4>Villa Privata sul Lago</h4>
+                            <p>Ristrutturazione</p>
+                        </div>
+                    </div>
+                    <div class="project-item reveal interactive" data-category="nuovo">
+                        <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1674&q=80" alt="Residenza Contemporanea">
+                        <div class="project-overlay">
+                            <h4>Residenze "Il Parco"</h4>
+                            <p>Nuova Costruzione</p>
+                        </div>
+                    </div>
+                    <div class="project-item reveal interactive" data-category="restauro">
+                        <img src="https://images.unsplash.com/photo-1618223249015-24b537e28943?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80" alt="Chiesa Antica">
+                        <div class="project-overlay">
+                            <h4>Chiesa di San Michele</h4>
+                            <p>Restauro Facciate</p>
+                        </div>
+                    </div>
+                    <div class="project-item reveal interactive" data-category="ristrutturazione">
+                        <img src="https://images.unsplash.com/photo-1616046229478-9901c5536a45?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1760&q=80" alt="Loft Industriale">
+                        <div class="project-overlay">
+                            <h4>Loft Urbano</h4>
+                            <p>Ristrutturazione</p>
+                        </div>
+                    </div>
+                    <div class="project-item reveal interactive" data-category="restauro">
+                        <img src="https://images.unsplash.com/photo-1602008775431-7b56a3a45d94?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80" alt="Castello Medievale">
+                        <div class="project-overlay">
+                            <h4>Castello di Collina</h4>
+                            <p>Risanamento Conservativo</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="processo">
+            <div class="container">
+                <div class="section-intro text-center reveal">
+                    <h2>Il Nostro Processo</h2>
+                    <p>Trasparenza, rigore e comunicazione costante sono i pilastri del nostro metodo di lavoro, studiato per guidarvi in ogni fase del progetto con serenità e fiducia.</p>
+                </div>
+                <div class="process-timeline">
+                    <div class="process-step left reveal">
+                        <div class="process-content">
+                            <h3>01. Consulenza e Analisi</h3>
+                            <p>Ascoltiamo le vostre esigenze e conduciamo un'analisi approfondita dello stato di fatto per definire obiettivi chiari e realistici.</p>
+                        </div>
+                    </div>
+                    <div class="process-step right reveal">
+                        <div class="process-content">
+                            <h3>02. Progettazione e Preventivo</h3>
+                            <p>Sviluppiamo una proposta progettuale dettagliata, completa di un preventivo trasparente e analitico.</p>
+                        </div>
+                    </div>
+                    <div class="process-step left reveal">
+                        <div class="process-content">
+                            <h3>03. Esecuzione e Gestione</h3>
+                            <p>Coordiniamo ogni fase del cantiere con maestranze qualificate e un project management rigoroso, garantendo tempi e costi.</p>
+                        </div>
+                    </div>
+                    <div class="process-step right reveal">
+                        <div class="process-content">
+                            <h3>04. Consegna e Assistenza</h3>
+                            <p>Consegniamo l'opera finita a regola d'arte e rimaniamo a vostra disposizione per qualsiasi necessità futura.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="final-cta">
+            <div class="container reveal">
+                <h2>Pronto a dare nuova vita al tuo immobile?</h2>
+                <a href="#contatti" class="btn btn-primary interactive">Richiedi una Consulenza</a>
+            </div>
+        </section>
+
+        <section id="contatti">
+            <div class="container">
+                <div class="section-intro text-center reveal">
+                    <h2>Contattaci</h2>
+                    <p>Iniziamo a costruire il tuo progetto. Il nostro team è a tua disposizione per una consulenza senza impegno.</p>
+                </div>
+                <div class="contact-wrapper">
+                    <div class="contact-info reveal">
+                        <h3>Informazioni di Contatto</h3>
+                        <p>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 005.169-4.418 9.577 9.577 0 00-1.229-13.598 9.577 9.577 0 00-13.598 1.23A9.577 9.577 0 002 11.956a16.975 16.975 0 005.169 4.418l.07.04.028.015a.76.76 0 00.723 0l.028-.015.071-.041zM12 11a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" clip-rule="evenodd" /></svg>
+                            Via dell'Architettura, 123<br>00100 Roma, Italia
+                        </p>
+                        <p>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 4.5a3 3 0 013-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 01-.694 1.955l-1.293.97c-.135.101-.164.279-.087.431l4.106 7.492c.078.152.25.18.432.086l.966-1.291a1.875 1.875 0 011.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 01-3 3h-2.25C6.55 22.5 1.5 17.45 1.5 10.5V4.5z" /></svg>
+                            <a href="tel:+390612345678" class="interactive">+39 06 1234 5678</a>
+                        </p>
+                        <p>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" /><path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" /></svg>
+                            <a href="mailto:info@restaurasrl.it" class="interactive">info@restaurasrl.it</a>
+                        </p>
+                    </div>
+                    <form action="#" class="contact-form reveal" style="transition-delay: 200ms;">
+                        <div class="form-group">
+                            <input type="text" name="name" placeholder="Nome e Cognome" required class="interactive">
+                        </div>
+                        <div class="form-group">
+                            <input type="email" name="email" placeholder="Email" required class="interactive">
+                        </div>
+                        <div class="form-group">
+                            <textarea name="message" placeholder="Il tuo messaggio" required class="interactive"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary interactive">Invia Richiesta</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <a href="#hero" class="footer-logo interactive">Restaura<span>.</span></a>
+            <ul class="footer-links">
+                <li><a href="#specialization" class="interactive">Chi Siamo</a></li>
+                <li><a href="#servizi" class="interactive">Servizi</a></li>
+                <li><a href="#progetti" class="interactive">Progetti</a></li>
+                <li><a href="#contatti" class="interactive">Contatti</a></li>
+            </ul>
+            <div class="social-icons">
+                <a href="#" class="interactive" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg></a>
+                <a href="#" class="interactive" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98C15.667.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"/></svg></a>
+                <a href="#" class="interactive" aria-label="LinkedIn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.25 6.5 1.75 1.75 0 016.5 8.25zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93-.94 0-1.62.68-1.62 1.93V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.38.99 3.38 3.3V19z"/></svg></a>
+            </div>
+            <p class="copyright">&copy; 2023 Restaura Srl. Tutti i diritti riservati. P.IVA 12345678901</p>
+        </div>
+    </footer>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cursor effect
+            const cursorDot = document.querySelector('.cursor-dot');
+            const cursorOutline = document.querySelector('.cursor-outline');
+            let mouseX = 0, mouseY = 0;
+            let outlineX = 0, outlineY = 0;
+
+            window.addEventListener('mousemove', e => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            const animateCursor = () => {
+                cursorDot.style.left = `${mouseX}px`;
+                cursorDot.style.top = `${mouseY}px`;
+                
+                const dx = mouseX - outlineX;
+                const dy = mouseY - outlineY;
+                outlineX += dx * 0.1;
+                outlineY += dy * 0.1;
+                cursorOutline.style.left = `${outlineX}px`;
+                cursorOutline.style.top = `${outlineY}px`;
+                
+                requestAnimationFrame(animateCursor);
+            };
+            animateCursor();
+
+            // Sticky Header
+            const header = document.querySelector('.main-header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // Mobile Navigation
+            const hamburger = document.querySelector('.hamburger');
+            const nav = document.querySelector('.main-nav');
+            const navLinks = document.querySelectorAll('.main-nav a');
+
+            hamburger.addEventListener('click', () => {
+                nav.classList.toggle('active');
+                hamburger.classList.toggle('toggle');
+            });
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (nav.classList.contains('active')) {
+                        nav.classList.remove('active');
+                        hamburger.classList.remove('toggle');
+                    }
+                });
+            });
+
+            // Scroll Reveal Animation
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal').forEach(el => {
+                revealObserver.observe(el);
+            });
+
+            // Project Filter
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const projectItems = document.querySelectorAll('.project-item');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const filter = btn.dataset.filter;
+
+                    projectItems.forEach(item => {
+                        item.style.display = 'none';
+                        if (filter === 'all' || item.dataset.category === filter) {
+                            // Use a small timeout to allow for transition effect
+                            setTimeout(() => {
+                                item.style.display = 'block';
+                            }, 10);
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
